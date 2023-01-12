@@ -1,6 +1,7 @@
 const express = require('express');
 const authRoute = require('./Routes/authRoutes')
 const orderRoute = require('./Routes/orderRoutes')
+const passport = require("passport")
 const rateLimit = require('express-rate-limit')
 const helmet = require('helmet');
 const logger = require('./logging/logger');
@@ -11,7 +12,7 @@ const app = express()
 app.use(express.json());
 app.use(express.urlencoded({extended: true}))
 app.use('/', authRoute)
-app.use('/orders', orderRoute)
+app.use('/orders', passport.authenticate('jwt', { session: false  }), orderRoute)
 
 const limiter = rateLimit({
 	windowMs: 15 * 60 * 1000, // 15 minutes
@@ -30,7 +31,7 @@ app.use(limiter)
 app.get('/', (req, res) => {
     logger.info('WELCOME')
     res.status(200).send({
-        message: 'Welcome To 426Tunn Blog!!!!'
+        message: 'Welcome To 426Pizza!!!!'
     })
 });
 
